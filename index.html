@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+  <title>Wikipedia Viewer</title>
+
+  <!--    Include Font Awesome Fonts      -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+
+  <!--    Include Google Fonts         -->
+  <link href="https://fonts.googleapis.com/css?family=Fresca" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Orbitron" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Lemonada" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Lobster" rel="stylesheet">
+
+  <!--    Include Bootstrap AJAX & Jquery Source      -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <script src="jquery.min.js"></script>
+</head>
+
+<style>
+  .header {
+    padding-top: 30px;
+    padding-bottom: 10px;
+    color: yellow;
+    font-size: 60px;
+    font-family: Lobster, cursive;
+  }
+  a {
+    display: block;
+    margin: 10px;
+    padding: 0 50px;
+    padding: 20px;
+    text-align: justify;
+    color: #000;
+    background-color: #fff;
+    border-radius: 5px;
+  }
+  a:hover {
+    color: blue;
+  }
+  ul li {
+    list-style-type: none;
+  }
+  .title {
+    margin-bottom: 15px;
+    font-family: 'Montserrat', sans-serif;
+  }
+  a:hover {
+    text-decoration: none;
+    color: #000;
+    border-left: 4px solid #FF8C00;
+    border-right: 4px solid #FF8C00;
+  }
+
+  .content-wrap {
+    padding-top: 40px;
+  }
+  #searchTxt {
+    width: 350px;
+    height: 38px;
+    padding-left: 10px;
+    display: block;
+    margin: 0 auto;
+    margin-top: 20px;
+    outline: none;
+  }
+  .btn-default {
+    margin: 4px;
+    margin-top: 10px;
+    font-size: 16px;
+    border: none;
+    color: black;
+  }
+  .b1 {
+    background-color: #ab38d0;
+  }
+  .b2 {
+    background-color: cornflowerblue;
+  }
+  .by {
+    font-family: fresca;
+    font-size: 20px;
+    font-weight: bold;
+    color: coral;
+  }
+</style>
+
+<body background="https://cdn-images-1.medium.com/max/2000/1*t0FLqKuduU0MH0tT6mvG9w.jpeg">
+
+<script>
+  $(document).ready(function() {
+    $("#searchbtn").click(function() {
+      // clearing the content of the list
+      $("ul").empty();
+      var search = $("#searchTxt").val();
+
+      //AJAX call from URL
+      $.ajax({
+        type: 'GET',
+        url: 'https://en.wikipedia.org/w/api.php?format=json&action=query&generator=search&gsrnamespace=0&gsrlimit=10&prop=extracts&pilimit=max&exintro&explaintext&exsentences=1&exlimit=max&gsrsearch=' + search,
+        dataType: 'jsonp',
+        success: function(result) {
+          console.log(result);
+          var obj = result.query.pages;
+          for (var prop in obj) {
+            $("ul").append('<a target="_blank" href="https://en.wikipedia.org/wiki?curid=' + obj[prop].pageid + '">' + '<li><h3 class="title ">' + obj[prop].title + '</h3><p class="text">' + obj[prop].extract + '</p></li></a>');
+          }
+        }
+      });
+    });
+
+    // starting a search after enter is pressed
+    $("#searchTxt").keypress(function(e) {
+      if (e.which == 13) {
+        $("#searchbtn").click();
+      }
+    });
+
+    // removing the outline of the buttons
+    // when clicked
+    $('#searchbtn, #rBtn').click(function() {
+      $(this).blur();
+    });
+  });
+</script>
+
+<div class="container-fluid">
+  <div class="text-center content-wrap">
+    <h1 class="header">Wikipedia Viewer</h1>
+    <input type="text" placeholder="Search..." class="text-area" id="searchTxt">
+    <button id="searchbtn" class="btn btn-default b1" aria-hidden="true">Search</button>
+    <a class="btn btn-default b2" href="https://en.wikipedia.org/wiki/Special:Random" target="_blank" class="link" id="rBtn">Generate Random Article</a>
+    <div><p class="by">by Spetsnaz</p></div>
+    <ul>
+    </ul>
+  </div>
+  <div>
+</body>
+</html>
